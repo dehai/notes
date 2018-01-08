@@ -1,0 +1,50 @@
+1, Setup openQA-worker on an x86_64 host 
+zypper in openQA-worker
+zypper in xterm-console ## ensure this package installed,because will be used .
+
+Note: make sure x3270 is installed on the host
+zypper in x3270
+
+2, Edit /etc/openqa/client.conf with key and secret
+
+3, Edit /etc/openqa/workers.ini and define a s390x zVM worker
+For example:
+
+[N]
+WORKER_CLASS = s390x-zVM-182
+S390_HOST = 182
+ZVM_GUEST = linux182
+ZVM_HOST = zvm54.suse.de
+ZVM_PASSWORD = lin390
+WORKER_HOSTNAME = your-x86_64-worker-IP/HOSTNAME
+
+4, Start worker instance
+systemctl start openqa-worker@N.service
+
+Check the openqa webui to see the worker
+
+5, Post a job to the s390x-zVM-xxx worker
+/usr/share/openqa/script/client jobs post \
+ISO=SLE-12-SP3-Server-DVD-s390x-GM-DVD1.iso \
+DISTRI=sle \
+VERSION=12-SP3 \
+FLAVOR=Server-DVD \
+ARCH=s390x \
+BUILD=GM \
+TEST=gnome \
+REPO_0=SLE-12-SP3-Server-DVD-s390x-GM-DVD1 \
+INSTALLONLY=1 \
+MACHINE=s390x-zVM-182 \
+BACKEND=s390x \
+INSTALLONLY=1 \
+S390_NETWORK_PARAMS="OSAHWAddr= OSAMedium=eth InstNetDev=osa OSAInterface=qdio HostIP=10.161.155.182/20 Hostname=s390vsl182.suse.de Portname=VSWNL2 Gateway=10.161.159.254 Nameserver=10.160.0.1 Domain=suse.de PortNo=0 Layer2=0 ReadChannel=0.0.0700 WriteChannel=0.0.0701 DataChannel=0.0.0702" \
+WORKER_CLASS=s390x-zVM-182
+
+6, Define a machine for tests in job groups
+Name: s390x-zVM-182 
+Backend: s390x
+Settings:
+  INSTALLONLY=1
+  S390_NETWORK_PARAMS=OSAHWAddr= OSAMedium=eth InstNetDev=osa OSAInterface=qdio HostIP=10.161.155.@S390_HOST@/20 Hostname=s390vsl@S390_HOST@.suse.de Portname=VSWNL2 Gateway=10.161.159.254 Nameserver=10.160.0.1 Domain=suse.de PortNo=0 Layer2=0 ReadChannel=0.0.0700 WriteChannel=0.0.0701 DataChannel=0.0.0702
+  WORKER_CLASS=s390x-zVM-182
+
