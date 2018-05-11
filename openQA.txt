@@ -3,13 +3,14 @@ Based on SLE-12 linux system.
 https://github.com/os-autoinst
 https://gitlab.suse.de/openqa/os-autoinst-needles-sles
 
-1:zypper ar below five repositories
+1:zypper ar below six repositories
 	http://download.opensuse.org/repositories/Virtualization/SLE_12/
-	http://download.opensuse.org/repositories/filesystems/SLE_12/
-	http://download.opensuse.org/repositories/devel:/openQA/SLE_12/
-	http://download.opensuse.org/repositories/devel:/openQA:/SLE-12/SLE_12/
-	http://download.opensuse.org/repositories/utilities/SLE_12/
-as: Virtualization,filesystems,openQA,openQA-perl-modules,utilities
+	http://download.opensuse.org/repositories/filesystems/SLE_12_SP3/
+	http://download.opensuse.org/repositories/devel:/openQA/SLE_12_SP3/
+	http://download.opensuse.org/repositories/devel:/openQA:/SLE-12/SLE_12_SP3/
+	http://download.opensuse.org/repositories/utilities/SLE_12_Sp3/
+    http://download.opensuse.org/repositories/devel:/languages:/perl/SLE_12_SP3/
+as: Virtualization,filesystems,openQA,openQA-perl-modules,utilities,perl
 2:zypper se openQA
 3:zypper in openQA openQA-common
 4:sudo cp /etc/apache2/vhosts.d/openqa.conf.template /etc/apache2/vhosts.d/openqa.conf
@@ -49,16 +50,19 @@ as: Virtualization,filesystems,openQA,openQA-perl-modules,utilities
 SLE testcase and needles:
 DISTRI=sle
 testcase:
-mkdir -p /var/lib/openqa/tests/sle 
-chown -R geekotest:www /var/lib/openqa/tests/sle
+cd /var/lib/openqa/tests/
 git clone -b master git://github.com/os-autoinst/os-autoinst-distri-opensuse.git
+ln -s /var/lib/openqa/tests/os-autoinst-distri-opensuse/ sle
+chown -R geekotest:www /var/lib/openqa/tests/sle
 git config user.email "dhkong@suse.com"
 git config user.name "Dehai Kong"
 git config --global http.sslVerify false
 
 needles:
-mkdir -p /var/lib/openqa/share/tests/sle/products/sle/needles
+mkdir -p /var/lib/openqa/share/tests/sle/products/sle/
+cd /var/lib/openqa/share/tests/sle/products/sle/
 git clone -b master gitlab@gitlab.suse.de:dehai/os-autoinst-needles-sles.git
+ln -s os-autoinst-needles-sles/ needles
 git config user.email "dhkong@suse.com"
 git config user.name "Dehai Kong"
 git config --global http.sslVerify false
